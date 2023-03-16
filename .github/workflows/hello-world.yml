@@ -1,0 +1,30 @@
+name: Hello World!
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# 同じワークフロー/同じブランチで実行中ジョブがあれば自動停止させる
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  hello-matrix:
+    strategy:
+      fail-fast: false
+      matrix:
+        env: [zk, gf, dm]
+    runs-on:
+      - ubuntu-latest
+      # - self-hosted
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Hello World
+        run: echo ${{ matrix.env }}
+
